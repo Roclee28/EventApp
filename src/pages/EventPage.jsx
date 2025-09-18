@@ -1,5 +1,6 @@
 import { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { ArrowBackIcon } from "@chakra-ui/icons";
 import {
   Box,
   Heading,
@@ -126,117 +127,137 @@ export const EventPage = () => {
   const organizer = users[event.createdBy];
 
   return (
-    <Box p={6}>
-      {isEditing ? (
-        // -----------------------------
-        // EDIT MODE
-        // -----------------------------
-        <Box as="form" onSubmit={handleUpdate}>
-          <Input
-            name="title"
-            value={formData.title || ""}
-            onChange={handleChange}
-            placeholder="Title"
-            mb={3}
-          />
-          <Textarea
-            name="description"
-            value={formData.description || ""}
-            onChange={handleChange}
-            placeholder="Description"
-            mb={3}
-          />
-          <Input
-            name="image"
-            value={formData.image || ""}
-            onChange={handleChange}
-            placeholder="Image URL"
-            mb={3}
-          />
-          <Input
-            type="datetime-local"
-            name="startTime"
-            value={formData.startTime || ""}
-            onChange={handleChange}
-            mb={3}
-          />
-          <Input
-            type="datetime-local"
-            name="endTime"
-            value={formData.endTime || ""}
-            onChange={handleChange}
-            mb={3}
-          />
-          <Flex gap={2}>
-            <Button type="submit" colorScheme="green" size="sm">
-              Save
-            </Button>
-            <Button
-              onClick={() => setIsEditing(false)}
-              colorScheme="gray"
-              size="sm"
-            >
-              Cancel
-            </Button>
-          </Flex>
-        </Box>
-      ) : (
-        // -----------------------------
-        // VIEW MODE
-        // -----------------------------
-        <>
-          <Image
-            src={event.image}
-            alt={event.title}
-            borderRadius="md"
-            mb={4}
-            width="50%"
-            maxHeight="400px"
-            objectFit="cover"
-            objectPosition={event.title === "Tennis" ? "top" : "center"}
-          />
+    <Box p={6} maxW="600px" mx="auto">
+      <Button
+        leftIcon={<ArrowBackIcon />}
+        mb={4}
+        size={{ base: "md", md: "sm" }}
+        width={{ base: "100%", md: "auto" }}
+        onClick={() => navigate(-1)}
+      >
+        Back
+      </Button>
 
-          <Heading mb={2}>{event.title}</Heading>
-          <Text fontSize="md" color="gray.600" mb={2}>
-            {event.description}
-          </Text>
-
-          <Text fontSize="sm" color="gray.500">
-            Start: {new Date(event.startTime).toLocaleString()}
-          </Text>
-          <Text fontSize="sm" color="gray.500" mb={2}>
-            End: {new Date(event.endTime).toLocaleString()}
-          </Text>
-
-          <Stack direction="row" mt={2} spacing={2} mb={4}>
-            {event.categoryIds.map((catId) => (
-              <Badge key={catId} colorScheme="blue">
-                {categories[catId]}
-              </Badge>
-            ))}
-          </Stack>
-
-          {organizer && (
-            <Flex align="center" mb={4} gap={2}>
-              <Avatar src={organizer.image} name={organizer.name} />
-              <Text>{organizer.name}</Text>
+      <Box
+        p={6}
+        borderWidth="1px"
+        borderRadius="md"
+        borderColor="gray.200"
+        boxShadow="sm"
+        maxW={["100%", "600px"]}
+        mx="auto"
+      >
+        {isEditing ? (
+          // -----------------------------
+          // EDIT MODE
+          // -----------------------------
+          <Box as="form" onSubmit={handleUpdate}>
+            <Input
+              name="title"
+              value={formData.title || ""}
+              onChange={handleChange}
+              placeholder="Title"
+              mb={3}
+            />
+            <Textarea
+              name="description"
+              value={formData.description || ""}
+              onChange={handleChange}
+              placeholder="Description"
+              mb={3}
+            />
+            <Input
+              name="image"
+              value={formData.image || ""}
+              onChange={handleChange}
+              placeholder="Image URL"
+              mb={3}
+            />
+            <Input
+              type="datetime-local"
+              name="startTime"
+              value={formData.startTime || ""}
+              onChange={handleChange}
+              mb={3}
+            />
+            <Input
+              type="datetime-local"
+              name="endTime"
+              value={formData.endTime || ""}
+              onChange={handleChange}
+              mb={3}
+            />
+            <Flex gap={2}>
+              <Button type="submit" colorScheme="green" size="sm">
+                Save
+              </Button>
+              <Button
+                onClick={() => setIsEditing(false)}
+                colorScheme="gray"
+                size="sm"
+              >
+                Cancel
+              </Button>
             </Flex>
-          )}
+          </Box>
+        ) : (
+          // -----------------------------
+          // VIEW MODE
+          // -----------------------------
+          <>
+            <Image
+              src={event.image}
+              alt={event.title}
+              borderRadius="md"
+              mb={4}
+              width="100%"
+              maxHeight="200px"
+              objectFit="cover"
+              objectPosition={event.title === "Tennis" ? "top" : "center"}
+            />
 
-          <Flex gap={2}>
-            <Button
-              size="xs"
-              colorScheme="blue"
-              onClick={() => setIsEditing(true)}
-            >
-              Edit
-            </Button>
-            <Button size="xs" colorScheme="red" onClick={handleDelete}>
-              Delete
-            </Button>
-          </Flex>
-        </>
-      )}
+            <Heading mb={2}>{event.title}</Heading>
+            <Text fontSize="md" color="gray.600" mb={2}>
+              {event.description}
+            </Text>
+
+            <Text fontSize="sm" color="gray.500">
+              Start: {new Date(event.startTime).toLocaleString()}
+            </Text>
+            <Text fontSize="sm" color="gray.500" mb={2}>
+              End: {new Date(event.endTime).toLocaleString()}
+            </Text>
+
+            <Stack direction="row" mt={2} spacing={2} mb={4}>
+              {event.categoryIds.map((catId) => (
+                <Badge key={catId} colorScheme="blue">
+                  {categories[catId]}
+                </Badge>
+              ))}
+            </Stack>
+
+            {organizer && (
+              <Flex align="center" mb={4} gap={2}>
+                <Avatar src={organizer.image} name={organizer.name} />
+                <Text>{organizer.name}</Text>
+              </Flex>
+            )}
+
+            <Flex gap={2}>
+              <Button
+                size="xs"
+                colorScheme="blue"
+                onClick={() => setIsEditing(true)}
+              >
+                Edit
+              </Button>
+              <Button size="xs" colorScheme="red" onClick={handleDelete}>
+                Delete
+              </Button>
+            </Flex>
+          </>
+        )}
+      </Box>
     </Box>
   );
 };

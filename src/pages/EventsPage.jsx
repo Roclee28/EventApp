@@ -28,26 +28,6 @@ export const EventsPage = () => {
 
   const location = useLocation();
 
-  // ----------------------------
-  // DELETE event function
-  const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this event?")) return;
-
-    try {
-      const res = await fetch(`http://localhost:3000/events/${id}`, {
-        method: "DELETE",
-      });
-
-      if (!res.ok) throw new Error("Failed to delete event");
-
-      setEvents(events.filter((event) => event.id !== id));
-    } catch (err) {
-      console.error(err);
-      alert("Error deleting event");
-    }
-  };
-  // ----------------------------
-
   // Fetch events
   const fetchEvents = async () => {
     setLoading(true);
@@ -95,7 +75,7 @@ export const EventsPage = () => {
   };
 
   return (
-    <Box p={6}>
+    <Box p={6} maxW="1200px" mx="auto">
       <Heading mb={4}>All Events</Heading>
 
       {/* Search and Filter Controls */}
@@ -189,16 +169,6 @@ export const EventsPage = () => {
                   ))}
                 </Stack>
               </Box>
-
-              <Button
-                size="sm"
-                colorScheme="red"
-                mt={2}
-                alignSelf="flex-start"
-                onClick={() => handleDelete(event.id)}
-              >
-                Delete
-              </Button>
             </Box>
           ))}
         </SimpleGrid>
