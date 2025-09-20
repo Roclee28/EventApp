@@ -10,6 +10,8 @@ import {
   Select,
   Button,
   useToast,
+  Stack,
+  Checkbox,
 } from "@chakra-ui/react";
 
 export const AddEvent = () => {
@@ -22,7 +24,7 @@ export const AddEvent = () => {
   const [image, setImage] = useState("");
   const [startTime, setStartTime] = useState("");
   const [endTime, setEndTime] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
+  const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedUser, setSelectedUser] = useState("");
   const [categories, setCategories] = useState([]);
   const [users, setUsers] = useState([]);
@@ -62,7 +64,7 @@ export const AddEvent = () => {
       image,
       startTime,
       endTime,
-      categoryId: Number(selectedCategory),
+      categoryIds: selectedCategories,
       createdBy: Number(selectedUser),
     };
 
@@ -104,7 +106,6 @@ export const AddEvent = () => {
         maxW={["100%", "600px"]}
         mx="auto"
       >
-        
         <Heading mb={4}>Add New Event</Heading>
         <form onSubmit={handleSubmit}>
           <FormControl mb={2} isRequired>
@@ -154,19 +155,28 @@ export const AddEvent = () => {
           </FormControl>
 
           <FormControl mb={2}>
-            <FormLabel>Category</FormLabel>
-            <Select
-              placeholder="Select category"
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              maxW={["100%", "300px"]} // mobile: 100%, desktop: 300px
-            >
+            <FormLabel>Categories</FormLabel>
+            <Stack spacing={2} direction="column">
               {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
+                <Checkbox
+                  key={cat.id}
+                  value={cat.id}
+                  isChecked={selectedCategories.includes(cat.id)}
+                  onChange={(e) => {
+                    const id = Number(e.target.value);
+                    if (e.target.checked) {
+                      setSelectedCategories([...selectedCategories, id]);
+                    } else {
+                      setSelectedCategories(
+                        selectedCategories.filter((cid) => cid !== id)
+                      );
+                    }
+                  }}
+                >
                   {cat.name}
-                </option>
+                </Checkbox>
               ))}
-            </Select>
+            </Stack>
           </FormControl>
 
           <FormControl mb={4} isRequired>

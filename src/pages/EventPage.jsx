@@ -229,9 +229,9 @@ export const EventPage = () => {
             </Text>
 
             <Stack direction="row" mt={2} spacing={2} mb={4}>
-              {event.categoryIds.map((catId) => (
+              {event.categoryIds?.map((catId) => (
                 <Badge key={catId} colorScheme="blue">
-                  {categories[catId]}
+                  {categories[catId] || "Unknown"}
                 </Badge>
               ))}
             </Stack>
