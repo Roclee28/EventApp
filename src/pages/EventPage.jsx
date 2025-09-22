@@ -15,6 +15,7 @@ import {
   Input,
   Textarea,
   useToast,
+  Checkbox,
 } from "@chakra-ui/react";
 import { DataContext } from "../components/DataContext";
 
@@ -32,6 +33,14 @@ export const EventPage = () => {
   const [loading, setLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false); // <-- toggle edit mode
   const [formData, setFormData] = useState({});
+
+  // Datetime Local Input Helper
+  const formatDateTimeLocal = (dateString) => {
+    if (!dateString) return "";
+    const date = new Date(dateString);
+    const tzOffset = date.getTimezoneOffset() * 60000;
+    return new Date(date - tzOffset).toISOString().slice(0, 16);
+  };
 
   // Fetch single event
   const fetchEvent = async () => {
@@ -94,7 +103,10 @@ export const EventPage = () => {
       const res = await fetch(`http://localhost:3000/events/${eventId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          categoryIds: formData.categoryIds || [],
+        }),
       });
 
       if (!res.ok) throw new Error("Failed to update event");
@@ -176,17 +188,44 @@ export const EventPage = () => {
             <Input
               type="datetime-local"
               name="startTime"
-              value={formData.startTime || ""}
+              value={formatDateTimeLocal(formData.startTime)}
               onChange={handleChange}
               mb={3}
             />
             <Input
               type="datetime-local"
               name="endTime"
-              value={formData.endTime || ""}
+              value={formatDateTimeLocal(formData.endTime)}
               onChange={handleChange}
               mb={3}
             />
+            <Stack spacing={2} mb={3}>
+              <Heading as="h4" size="sm">
+                Categories
+              </Heading>
+              {Object.entries(categories).map(([id, name]) => (
+                <Checkbox
+                  key={id}
+                  isChecked={formData.categoryIds?.includes(Number(id))}
+                  onChange={(e) => {
+                    let newCategories = formData.categoryIds || [];
+                    if (e.target.checked) {
+                      newCategories = [...newCategories, Number(id)];
+                    } else {
+                      newCategories = newCategories.filter(
+                        (catId) => catId !== Number(id)
+                      );
+                    }
+                    setFormData((prev) => ({
+                      ...prev,
+                      categoryIds: newCategories,
+                    }));
+                  }}
+                >
+                  {name}
+                </Checkbox>
+              ))}
+            </Stack>
             <Flex gap={2}>
               <Button type="submit" colorScheme="green" size="sm">
                 Save
